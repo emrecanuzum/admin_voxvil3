@@ -1,13 +1,52 @@
 "use client";
-import { StatDownArrow } from "@chakra-ui/react";
-import { Avatar, Button, Input } from "@nextui-org/react";
-import { DataTable, SearchIcon } from "@saas-ui/react";
+import { SetStateAction, useState } from "react";
+
+import { Avatar, Button, Input, User } from "@nextui-org/react";
+import { SearchIcon } from "@saas-ui/react";
 import Image from "next/image";
-import GoChevronDown from "react-icons/go";
+import DropdownButton from "./components/dropdown";
+import { Link } from "@nextui-org/react";
+import NextLink from "next/link";
+import { Box } from "@chakra-ui/react";
+import Usertable from "./components/usertable";
+import MyCommunity from "./my-community/page";
+import Rewards from "./rewards/page";
+import Merch from "./merch/page";
+import { ClassNames } from "@emotion/react";
 
 export default function Home() {
+  const [showCommunity, setShowCommunity] = useState(false);
+  const [showMembers, setShowMembers] = useState(true);
+  const [showMerch, setShowMerch] = useState(false);
+  const [showRewards, setShowRewards] = useState(false);
+
+  const handleCommunityClick = () => {
+    setShowCommunity(true);
+    setShowMerch(false);
+    setShowRewards(false);
+    setShowMembers(false);
+  };
+  const handleMembersClick = () => {
+    setShowMembers(true);
+    setShowCommunity(false);
+    setShowRewards(false);
+    setShowMerch(false);
+  };
+  const handleMerchClick = () => {
+    setShowCommunity(false);
+    setShowMerch(true);
+    setShowRewards(false);
+    setShowMembers(false);
+  };
+  const handleRewardsClick = () => {
+    setShowCommunity(false);
+    setShowMerch(false);
+    setShowRewards(true);
+    setShowMembers(false);
+  };
+
   return (
-    <main>
+    <main className="dark">
       <div className="admin-pane min-h-screen bg-blue-950 bg-opacity-60 px-20">
         <div className="navbar flex justify-between items-center border-b-2 border-blue-300 border-opacity-25">
           <div className="title">Community Admin</div>
@@ -33,60 +72,65 @@ export default function Home() {
               <div className="xp mr-2">110 XP</div>
             </div>
             <div className="dropdown-icon">
-              <StatDownArrow />
+              <DropdownButton />
             </div>
           </div>
         </div>
         <div className="page-selector flex justify-between items-center py-8">
           <div className="pages flex text-xl font-bold">
-            <div className="page mr-4  text-white text-opacity-50 hover:text-opacity-100">
+            <div
+              onClick={handleCommunityClick}
+              className={`mr-4 text-xl text-white hover:cursor-pointer hover:text-opacity-75 ${
+                showCommunity ? "text-opacity-100" : "text-opacity-50"
+              }`}
+            >
               MY COMMUNITY
             </div>
-            <div className="page mr-4  text-white text-opacity-100 hover:text-opacity-70">
+            <div
+              onClick={handleMembersClick}
+              className={`mr-4 text-xl text-white hover:cursor-pointer hover:text-opacity-75 ${
+                showMembers ? "text-opacity-100" : "text-opacity-50"
+              }`}
+            >
               MEMBERS
             </div>
-            <div className="page mr-4  text-white text-opacity-50 hover:text-opacity-100">
+            <div
+              onClick={handleRewardsClick}
+              className={`mr-4 text-xl text-white hover:cursor-pointer hover:text-opacity-75 ${
+                showRewards ? "text-opacity-100" : "text-opacity-50"
+              }`}
+            >
               REWARDS
             </div>
-            <div className="page  text-white text-opacity-50 hover:text-opacity-100">
+            <div
+              onClick={handleMerchClick}
+              className={`mr-4 text-xl text-white hover:cursor-pointer hover:text-opacity-75 ${
+                showMerch ? "text-opacity-100" : "text-opacity-50"
+              }`}
+            >
               MERCH
             </div>
           </div>
-          <Button color="secondary">Add new members</Button>
+          {showMembers ? (
+            <Button color="secondary">Add new members</Button>
+          ) : (
+            ""
+          )}
         </div>
-        <div className=" bg-white bg-opacity-5 rounded-xl">
-          <DataTable
-            columns={[
-              { accessorKey: "id", header: "#" },
-              { accessorKey: "name", header: "Name" },
-              { accessorKey: "xp", header: "XP" },
-              { accessorKey: "wallet_address", header: "Wallet ID" },
-              { accessorKey: "notes", header: "Notes" },
-              { accessorKey: "status", header: "Status" },
-              { accessorKey: "edit", header: " " },
-            ]}
-            data={[
-              {
-                id: 1,
-                name: "John Doe",
-                xp: "100 XP",
-                wallet_address: "0x1234...",
-                notes: "Kötü Üye",
-                status: "Deactive",
-                edit: "...",
-              },
-              {
-                id: 2,
-                name: "Emrecan Üzüm",
-                xp: "999 XP",
-                wallet_address: "0x8wJs...",
-                notes: "Harika üye",
-                status: "Active",
-                edit: "...",
-              },
-            ]}
-          />
-        </div>
+
+        <Box>
+          {showCommunity ? (
+            <MyCommunity />
+          ) : showMembers ? (
+            <Usertable />
+          ) : showMerch ? (
+            <Merch />
+          ) : showRewards ? (
+            <Rewards />
+          ) : (
+            <Usertable />
+          )}
+        </Box>
       </div>
     </main>
   );

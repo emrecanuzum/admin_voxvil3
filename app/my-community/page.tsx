@@ -94,7 +94,7 @@ const MyCommunity = () => {
         color="secondary"
         onClick={() => setIsOpen(true)}
       >
-        + Yeni Kampanya Ekle
+        + Add New Campaign
       </Button>
       <Modal className="dark" isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <ModalContent>

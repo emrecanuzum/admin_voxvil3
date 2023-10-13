@@ -6,8 +6,6 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-  Checkbox,
-  Link,
 } from "@nextui-org/react";
 import { Avatar, Button, Input, User, useDisclosure } from "@nextui-org/react";
 import { SearchIcon } from "@saas-ui/react";
@@ -92,8 +90,8 @@ export default function Home() {
   };
 
   return (
-    <main className="dark">
-      <div className="admin-pane min-h-screen bg-blue-950 bg-opacity-60 px-20">
+    <main className="text-white bg-black">
+      <div className="dark min-h-screen bg-blue-950 bg-opacity-60 px-20">
         <div className="navbar flex justify-between items-center border-b-2 border-blue-300 border-opacity-25">
           <div className="text-xl">Community Admin</div>
           <div className="user-info flex items-center py-8">
@@ -167,7 +165,7 @@ export default function Home() {
         </div>
         <div className="">
           <Modal
-            className="dark"
+            className="dark text-neutral-100"
             isOpen={isOpen}
             onOpenChange={onOpenChange}
             placement="top-center"
@@ -175,7 +173,7 @@ export default function Home() {
             <ModalContent>
               {(onClose) => (
                 <>
-                  <ModalHeader className="flex flex-col gap-1">
+                  <ModalHeader className="flex flex-col gap-1 text-white">
                     ADD NEW MEMBER
                   </ModalHeader>
                   <ModalBody>

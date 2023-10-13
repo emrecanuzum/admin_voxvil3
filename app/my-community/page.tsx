@@ -14,7 +14,7 @@ import {
 } from "@nextui-org/react";
 
 import Image from "next/image";
-import { BsCashCoin, BsDiscord, BsLink45Deg } from "react-icons/bs";
+import { BsDiscord, BsLink45Deg } from "react-icons/bs";
 
 import BaseImg from "../../public/base.png";
 
@@ -24,7 +24,7 @@ const MyCommunity = () => {
   const [submissionType, setSubmissionType] = useState("");
   const [action, setAction] = useState("");
   const [description, setDescription] = useState("");
-  const [xpRewards, setXpRewards] = useState(0);
+  const [xpRewards, setXpRewards] = useState("");
   const [campaigns, setCampaigns] = useState<
     {
       name: string;
@@ -39,7 +39,7 @@ const MyCommunity = () => {
       submissionType: "twitter",
       action: "twitter",
       description: "just retweet our lastest post and gain xp",
-      xpRewards: "35xp",
+      xpRewards: "35",
     },
   ]);
 
@@ -51,7 +51,7 @@ const MyCommunity = () => {
         submissionType: submissionType,
         action: action,
         description: description,
-        xpRewards: xpRewards.toString(),
+        xpRewards: xpRewards,
       },
     ]);
     setIsOpen(false);
@@ -97,9 +97,13 @@ const MyCommunity = () => {
       >
         + Add New Campaign
       </Button>
-      <Modal className="dark" isOpen={isOpen} onClose={() => setIsOpen(false)}>
+      <Modal
+        className="dark text-neutral-100"
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+      >
         <ModalContent>
-          <ModalHeader>Add Campaign</ModalHeader>
+          <ModalHeader className="text-white">Add Campaign</ModalHeader>
           <ModalBody>
             <Input
               value={campaignName}
@@ -136,11 +140,12 @@ const MyCommunity = () => {
               placeholder="Descriptipn"
             />
             <Input
-              key={xpRewards}
-              onChange={(e) => setXpRewards(parseInt(e.target.value))}
-              placeholder="XP Reward"
+              value={xpRewards}
+              onChange={(e) => setXpRewards(e.target.value)}
+              placeholder="XP"
             />
           </ModalBody>
+
           <ModalFooter>
             <Button
               color="danger"

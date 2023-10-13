@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { useState } from "react";
 import {
@@ -98,7 +99,7 @@ const MyCommunity = () => {
       </Button>
       <Modal className="dark" isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <ModalContent>
-          <ModalHeader>Kampanya Ekle</ModalHeader>
+          <ModalHeader>Add Campaign</ModalHeader>
           <ModalBody>
             <Input
               value={campaignName}
@@ -136,7 +137,7 @@ const MyCommunity = () => {
             />
             <Input
               key={xpRewards}
-              onChange={(e) => setXpRewards(Number(e.target.value))}
+              onChange={(e) => setXpRewards(parseInt(e.target.value))}
               placeholder="XP Reward"
             />
           </ModalBody>

@@ -208,7 +208,13 @@ export default function Home() {
                     </Button>
                     <Button
                       color="primary"
-                      onPress={() => handleSaveClick(name, walletId, notes)}
+                      onPress={() => {
+                        handleSaveClick(name, walletId, notes);
+                        onClose(); // Close the modal
+                        setName(""); // Clear the name field
+                        setWalletId(""); // Clear the walletId field
+                        setNotes(""); // Clear the notes field
+                      }}
                     >
                       Save
                     </Button>

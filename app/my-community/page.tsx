@@ -19,6 +19,9 @@ import { BsDiscord, BsLink45Deg } from "react-icons/bs";
 import BaseImg from "../../public/base.png";
 
 const MyCommunity = () => {
+  const [selectedSubmissionType, setSelectedSubmissionType] = useState("");
+  const [selectedActionType, setSelectedActionType] = useState("");
+
   const [isOpen, setIsOpen] = useState(false);
   const [campaignName, setCampaignName] = useState("");
   const [submissionType, setSubmissionType] = useState("");
@@ -113,25 +116,43 @@ const MyCommunity = () => {
             <Select
               className="dark"
               placeholder="Submission Type"
-              onChange={(e) => setSubmissionType(e.target.value)}
+              value={selectedSubmissionType}
+              onChange={(e) => setSelectedSubmissionType(e.target.value)}
             >
-              <SelectItem className="dark" value="Twitter" key={submissionType}>
+              <SelectItem
+                className="dark text-black"
+                value="twitter"
+                key="twitter"
+              >
                 Twitter
               </SelectItem>
-              <SelectItem className="dark" value="Discord" key={submissionType}>
+              <SelectItem
+                className="dark text-black"
+                value="discord"
+                key="discord"
+              >
                 Discord
               </SelectItem>
             </Select>
             <Select
               className="dark"
               placeholder="Action"
-              onChange={(e) => setAction(e.target.value)}
+              value={selectedActionType}
+              onChange={(e) => setSelectedActionType(e.target.value)}
             >
-              <SelectItem value="Twitter" key={submissionType}>
-                Twitter
+              <SelectItem
+                className="dark text-black"
+                value="twitter"
+                key="twitter"
+              >
+                Retweet
               </SelectItem>
-              <SelectItem value="Discord" key={submissionType}>
-                Discord
+              <SelectItem
+                className="dark text-black"
+                value="discord"
+                key="discord"
+              >
+                GM!
               </SelectItem>
             </Select>
             <Input
@@ -154,7 +175,18 @@ const MyCommunity = () => {
             >
               Cancel
             </Button>
-            <Button color="primary" onClick={handleSaveClick}>
+            <Button
+              color="primary"
+              onClick={() => {
+                handleSaveClick();
+                setIsOpen(false); // Close the modal
+                setCampaignName(""); // Clear the campaignName field
+                setSubmissionType(""); // Clear the submissionType field
+                setAction(""); // Clear the action field
+                setDescription(""); // Clear the description field
+                setXpRewards(""); // Clear the xpRewards field
+              }}
+            >
               Save
             </Button>
           </ModalFooter>
@@ -172,6 +204,7 @@ const MyCommunity = () => {
           <Button color="secondary">Join</Button>
         </div>
       ))}
+      <div className="my-10 h-12"></div>
     </main>
   );
 };

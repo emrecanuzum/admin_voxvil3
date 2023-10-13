@@ -1,7 +1,21 @@
 import React from "react";
 import { DataTable } from "@saas-ui/react";
 
-const Usertable = () => {
+type Member = {
+  id: number;
+  name: string;
+  xp: string;
+  wallet_address: string;
+  notes: string;
+  status: string;
+  edit: string;
+};
+
+type UsertableProps = {
+  members: Member[];
+};
+
+const Usertable: React.FC<UsertableProps> = ({ members }) => {
   return (
     <div className=" bg-white bg-opacity-5 rounded-xl">
       <DataTable
@@ -14,26 +28,7 @@ const Usertable = () => {
           { accessorKey: "status", header: "Status" },
           { accessorKey: "edit", header: " " },
         ]}
-        data={[
-          {
-            id: 1,
-            name: "John Doe",
-            xp: "100 XP",
-            wallet_address: "0x1234...",
-            notes: "Kötü Üye",
-            status: "Deactive",
-            edit: "...",
-          },
-          {
-            id: 2,
-            name: "Emrecan Üzüm",
-            xp: "999 XP",
-            wallet_address: "0x8wJs...",
-            notes: "Harika üye",
-            status: "Active",
-            edit: "...",
-          },
-        ]}
+        data={members}
       />
     </div>
   );

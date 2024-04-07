@@ -21,6 +21,7 @@
     "@solana/wallet-adapter-wallets": "^0.19.26",
     "@solana/web3.js": "^1.90.0",
     "axios": "^1.6.7",
+    "crypto-ts": "^1.0.2",
     "encoding": "^0.1.13",
     "framer-motion": "^10.16.4",
     "next": "13.5.4",

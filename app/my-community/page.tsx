@@ -1,6 +1,6 @@
 "use client";
-import React from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import {
   Modal,
   ModalContent,
@@ -12,22 +12,57 @@ import {
   Select,
   SelectItem,
 } from "@nextui-org/react";
-
 import Image from "next/image";
 import { BsDiscord, BsLink45Deg } from "react-icons/bs";
-
 import BaseImg from "../../public/base.png";
 
-const MyCommunity = () => {
-  const [selectedSubmissionType, setSelectedSubmissionType] = useState("");
-  const [selectedActionType, setSelectedActionType] = useState("");
+interface Campaign {
+  campain_name: string;
+  description: string;
+}
 
+const MyCommunity = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [campaignName, setCampaignName] = useState("");
-  const [submissionType, setSubmissionType] = useState("");
-  const [action, setAction] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [description, setDescription] = useState("");
   const [xpRewards, setXpRewards] = useState("");
+  const [getCampaigns, setGetCampaigns] = useState<any>([]);
+
+  const startDate = new Date().toISOString();
+
+  const handleSaveClick = async () => {
+    const newCampaign = {
+      start_date: startDate,
+      end_date: startDate,
+      campaign_name: campaignName,
+      description: description,
+      amount_xp: parseInt(xpRewards, 10),
+      brand_id: 1,
+    };
+
+    try {
+      const response = await axios.post(
+        "https://budgetblock-a59f6a9a244d.herokuapp.com/campain",
+        newCampaign,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error posting new campaign:", error);
+    }
+
+    // Reset form fields and close the modal
+    setIsOpen(false);
+    setCampaignName("");
+    setEndDate("");
+    setDescription("");
+    setXpRewards("");
+  };
   const [campaigns, setCampaigns] = useState<
     {
       name: string;
@@ -46,20 +81,20 @@ const MyCommunity = () => {
     },
   ]);
 
-  const handleSaveClick = () => {
-    setCampaigns([
-      ...campaigns,
-      {
-        name: campaignName,
-        submissionType: submissionType,
-        action: action,
-        description: description,
-        xpRewards: xpRewards,
-      },
-    ]);
-    setIsOpen(false);
-  };
+  useEffect(() => {
+    const fetchCampaigns = async () => {
+      try {
+        const response = await axios.get(
+          "https://budgetblock-a59f6a9a244d.herokuapp.com/campain"
+        );
+        setGetCampaigns(response.data); // Assuming the response data is the array of campaigns
+      } catch (error) {
+        console.error("Error fetching campaigns:", error);
+      }
+    };
 
+    fetchCampaigns();
+  }, []);
   return (
     <main className="dark mx-[20%]">
       <div className="flex items-center px-10 pb-5  mb-4 rounded-lg bg-blue-950 bg-opacity-30">
@@ -108,62 +143,31 @@ const MyCommunity = () => {
         <ModalContent>
           <ModalHeader className="text-white">Add Campaign</ModalHeader>
           <ModalBody>
+            {/* Campaign Name Input */}
             <Input
               value={campaignName}
               onChange={(e) => setCampaignName(e.target.value)}
-              placeholder="Campaign name"
+              placeholder="Campaign Name"
             />
-            <Select
-              className="dark"
-              placeholder="Submission Type"
-              value={selectedSubmissionType}
-              onChange={(e) => setSelectedSubmissionType(e.target.value)}
-            >
-              <SelectItem
-                className="dark text-black"
-                value="twitter"
-                key="twitter"
-              >
-                Twitter
-              </SelectItem>
-              <SelectItem
-                className="dark text-black"
-                value="discord"
-                key="discord"
-              >
-                Discord
-              </SelectItem>
-            </Select>
-            <Select
-              className="dark"
-              placeholder="Action"
-              value={selectedActionType}
-              onChange={(e) => setSelectedActionType(e.target.value)}
-            >
-              <SelectItem
-                className="dark text-black"
-                value="twitter"
-                key="twitter"
-              >
-                Retweet
-              </SelectItem>
-              <SelectItem
-                className="dark text-black"
-                value="discord"
-                key="discord"
-              >
-                GM!
-              </SelectItem>
-            </Select>
+            {/* End Date Input */}
+            <Input
+              type="datetime-local"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              placeholder="End Date"
+            />
+            {/* Description Input */}
             <Input
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Descriptipn"
+              placeholder="Description"
             />
+            {/* XP Rewards Input */}
             <Input
+              type="number"
               value={xpRewards}
               onChange={(e) => setXpRewards(e.target.value)}
-              placeholder="XP"
+              placeholder="XP Rewards"
             />
           </ModalBody>
 
@@ -175,30 +179,19 @@ const MyCommunity = () => {
             >
               Cancel
             </Button>
-            <Button
-              color="primary"
-              onClick={() => {
-                handleSaveClick();
-                setIsOpen(false); // Close the modal
-                setCampaignName(""); // Clear the campaignName field
-                setSubmissionType(""); // Clear the submissionType field
-                setAction(""); // Clear the action field
-                setDescription(""); // Clear the description field
-                setXpRewards(""); // Clear the xpRewards field
-              }}
-            >
+            <Button color="primary" onClick={handleSaveClick}>
               Save
             </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
-      {campaigns.map((campaign, index) => (
+      {getCampaigns.map((campaign: Campaign, index: number) => (
         <div
           key={index}
           className="flex items-start justify-between my-4 px-10 py-5 rounded-lg bg-blue-950 bg-opacity-30"
         >
           <div className="flex flex-col">
-            <h2 className="text-lg font-bold">{campaign.name}</h2>
+            <h2 className="text-lg font-bold">{campaign.campain_name}</h2>
             <p>{campaign.description}</p>
           </div>
           <Button color="secondary">Join</Button>

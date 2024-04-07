@@ -15,13 +15,25 @@ import Usertable from "../components/usertable";
 import MyCommunity from "../my-community/page";
 import Rewards from "../rewards/page";
 import Merch from "../merch/page";
+import { AES, enc } from "crypto-ts";
 
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useRouter } from "next/navigation";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import axios from "axios";
+import { useUserContext } from "../userContext";
+import NFTPage from "../nft/page";
+
+const aesSecretKey = {
+  secret: "DnGotT9Rk1VXiebPjKMhs7ntQYwGooVw",
+};
 
 export default function Dashboard() {
+  const { setAccessToken } = useUserContext();
+  const { accessToken } = useUserContext();
+
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure(); // onClose ekleyin
+  const [access, setAccess] = useState("");
 
   const [name, setName] = useState("");
   const [walletId, setWalletId] = useState("");
@@ -31,6 +43,7 @@ export default function Dashboard() {
   const [showMembers, setShowMembers] = useState(true);
   const [showMerch, setShowMerch] = useState(false);
   const [showRewards, setShowRewards] = useState(false);
+  const [showNft, setShowNft] = useState(false);
 
   const wallet = useWallet();
   const router = useRouter();
@@ -40,46 +53,53 @@ export default function Dashboard() {
     setShowMerch(false);
     setShowRewards(false);
     setShowMembers(false);
+    setShowNft(false);
   };
   const handleMembersClick = () => {
     setShowMembers(true);
     setShowCommunity(false);
     setShowRewards(false);
     setShowMerch(false);
+    setShowNft(false);
   };
   const handleMerchClick = () => {
     setShowCommunity(false);
     setShowMerch(true);
     setShowRewards(false);
     setShowMembers(false);
+    setShowNft(false);
   };
   const handleRewardsClick = () => {
     setShowCommunity(false);
     setShowMerch(false);
     setShowRewards(true);
     setShowMembers(false);
+    setShowNft(false);
+  };
+  const handleNftClick = () => {
+    setShowCommunity(false);
+    setShowMerch(false);
+    setShowRewards(false);
+    setShowMembers(false);
+    setShowNft(true);
   };
 
-  const [members, setMembers] = useState([
-    {
-      id: 1,
-      name: "John Doe",
-      xp: "100 XP",
-      wallet_address: "0x1234...",
-      notes: "Kötü Üye",
-      status: "Deactive",
-      edit: "...",
-    },
-    {
-      id: 2,
-      name: "Emrecan Üzüm",
-      xp: "999 XP",
-      wallet_address: "0x8wJs...",
-      notes: "Harika üye",
-      status: "Active",
-      edit: "...",
-    },
-  ]);
+  const [members, setMembers] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get(
+          "https://budgetblock-a59f6a9a244d.herokuapp.com/users/all"
+        );
+        setMembers(response.data);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const handleSaveClick = (name: string, walletId: string, notes: string) => {
     setMembers([
@@ -97,12 +117,32 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    if (!wallet.publicKey) {
+    if (!wallet.publicKey || !accessToken) {
       router.push("/");
     }
-  }, [wallet.publicKey, router]);
+  }, [wallet.publicKey, router, accessToken]);
 
-  if (wallet.publicKey) {
+  if (wallet.publicKey && accessToken) {
+    const postData = async () => {
+      const data = {
+        wallet_address: wallet.publicKey ? wallet.publicKey.toBase58() : "",
+        street_address: "ALTINTEPSİ MAH. UYGUR CADDESİ NO:2/1 BAYRAMPAŞA",
+        nft_address: "0x32c23bc539400BB79aA7cc2a028Bc21315123",
+      };
+
+      try {
+        const response = await axios.post(
+          "https://budgetblock-a59f6a9a244d.herokuapp.com/auth/register",
+          data
+        );
+
+        setAccessToken(response.data.access_token);
+        console.log(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     return (
       <main className="text-white bg-black">
         <div className="dark min-h-screen bg-blue-950 bg-opacity-60 px-20">
@@ -110,33 +150,20 @@ export default function Dashboard() {
             <div className="text-xl">Community Admin</div>
 
             <div className="user-info flex items-center py-8">
-              {/* <Input
-              classNames={{
-                base: "max-w-full sm:max-w-[15rem] h-10 px-4 rounded-xl",
-                mainWrapper: "h-full",
-                input: "text-small",
-                inputWrapper:
-                  "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
-              }}
-              placeholder="Type to search..."
-              size="lg"
-              startContent={<SearchIcon size={18} />}
-              type="search"
-            /> */}
               <WalletMultiButton />
               <div className="ml-4">
                 <Avatar src="https://i.pravatar.cc/150?u=a042581f4e29026024d" />
               </div>
-              <div className=" pl-2 min-w-max">
+              {/* <div className=" pl-2 min-w-max">
                 <div className="name mr-2">John Doe</div>
                 <div className="xp mr-2">110 XP</div>
               </div>
               <div className="dropdown-icon">
                 <DropdownButton />
-              </div>
+              </div> */}
             </div>
           </div>
-          <div className="page-selector flex justify-between items-center my-12">
+          <div className="page-selector flex justify-between items-center my-14">
             <div className="pages flex text-xl font-bold">
               <div
                 onClick={handleCommunityClick}
@@ -170,6 +197,14 @@ export default function Dashboard() {
               >
                 MERCH
               </div>
+              <div
+                onClick={handleNftClick}
+                className={`mr-4 text-xl text-white hover:cursor-pointer hover:text-opacity-75 ${
+                  showCommunity ? "text-opacity-100" : "text-opacity-50"
+                }`}
+              >
+                NFT
+              </div>
             </div>
             {showMembers ? (
               <Button className="mt-[-4]" onPress={onOpen} color="secondary">
@@ -189,10 +224,10 @@ export default function Dashboard() {
               <ModalContent>
                 {(onClose) => (
                   <>
-                    <ModalHeader className="flex flex-col gap-1 text-white">
+                    <ModalHeader className="flex flex-col text-white">
                       ADD NEW MEMBER
                     </ModalHeader>
-                    <ModalBody>
+                    <ModalBody className=" gap-1">
                       <Input
                         autoFocus
                         label="Name"
@@ -249,6 +284,8 @@ export default function Dashboard() {
               <Merch />
             ) : showRewards ? (
               <Rewards />
+            ) : showNft ? (
+              <NFTPage />
             ) : (
               <Usertable members={members} />
             )}

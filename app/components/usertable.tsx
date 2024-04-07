@@ -9,6 +9,7 @@ type Member = {
   notes: string;
   status: string;
   edit: string;
+  twitter: string;
 };
 
 type UsertableProps = {
@@ -22,11 +23,11 @@ const Usertable: React.FC<UsertableProps> = ({ members }) => {
         columns={[
           { accessorKey: "id", header: "#" },
           { accessorKey: "name", header: "Name" },
-          { accessorKey: "xp", header: "XP" },
+          { accessorKey: "twitter", header: "Twitter" },
           { accessorKey: "wallet_address", header: "Wallet ID" },
           { accessorKey: "notes", header: "Notes" },
-          { accessorKey: "status", header: "Status" },
-          { accessorKey: "edit", header: " " },
+          { accessorKey: "brand_name", header: "Community" },
+          // { accessorKey: "edit", header: " " },
         ]}
         data={members}
       />

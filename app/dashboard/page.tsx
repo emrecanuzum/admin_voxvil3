@@ -182,8 +182,8 @@ export default function Dashboard() {
                 MEMBERS
               </div>
               <div
-                onClick={handleRewardsClick}
-                className={`mr-4 text-xl text-white hover:cursor-pointer hover:text-opacity-75 ${
+                // onClick={handleRewardsClick}
+                className={`mr-4 text-xl text-white hover:cursor-not-allowed hover:text-opacity-75 hover:text-red-400 ${
                   showRewards ? "text-opacity-100" : "text-opacity-50"
                 }`}
               >
@@ -200,7 +200,7 @@ export default function Dashboard() {
               <div
                 onClick={handleNftClick}
                 className={`mr-4 text-xl text-white hover:cursor-pointer hover:text-opacity-75 ${
-                  showCommunity ? "text-opacity-100" : "text-opacity-50"
+                  showNft ? "text-opacity-100" : "text-opacity-50"
                 }`}
               >
                 NFT

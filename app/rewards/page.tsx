@@ -1,7 +1,11 @@
+"use client";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 const Rewards = () => {
-  return <div>Rewards</div>;
+  const router = useRouter();
+  router.push("/dashboard");
+  return <div></div>;
 };
 
 export default Rewards;

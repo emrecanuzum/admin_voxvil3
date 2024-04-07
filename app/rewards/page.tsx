@@ -1,10 +1,13 @@
 "use client";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 
 const Rewards = () => {
   const router = useRouter();
-  router.push("/dashboard");
+
+  useEffect(() => {
+    router.push("/dashboard");
+  }, [router]);
   return <div></div>;
 };
 

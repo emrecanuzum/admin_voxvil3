@@ -2,7 +2,7 @@ import React from "react";
 
 const NFTPage = () => {
   return (
-    <div>
+    <div className="text-center justify-center mx-auto">
       <div className=""></div>
     </div>
   );
